@@ -1,39 +1,10 @@
 [package]
-name = "img_miteyo"
+name = "img-miteyo"
 version = "0.1.0"
 edition = "2024"
 
 [[bin]]
 name = "app"
-path = "src/bin/app.rs"
-
-[workspace]
-members = ["api", "kernel", "adapter", "shared", "registry"]
-
-[workspace.dependencies]
-adapter = { path = "./adapter" }
-api = { path = "./api" }
-kernel = { path = "./kernel" }
-shared = { path = "./shared" }
-registry = { path = "./registry" }
-anyhow = "1.0.98"
-axum = { version = "0.8.4", features = ["macros"] }
-rstest = "0.25.0"
-sqlx = { version = "0.8.6", features = [
-    "runtime-tokio",
-    "chrono",
-    "macros",
-    "postgres",
-    "migrate",
-] }
-tokio = { version = "1.45.1", features = ["full"] }
+path = "src/main.rs"
 
 [dependencies]
-adapter.workspace = true
-api.workspace = true
-registry.workspace = true
-shared.workspace = true
-anyhow.workspace = true
-tokio.workspace = true
-axum.workspace = true
-sqlx.workspace = true

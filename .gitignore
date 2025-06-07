@@ -1,4 +1,5 @@
 .env
+old
 
 #---- Scala -----
 # sbt build artifacts
