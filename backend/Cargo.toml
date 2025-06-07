@@ -8,3 +8,14 @@ name = "app"
 path = "src/main.rs"
 
 [dependencies]
+anyhow = "1.0.98"
+axum = { version = "0.8.4", features = ["macros"] }
+rstest = "0.25.0"
+sqlx = { version = "0.8.6", features = [
+    "runtime-tokio",
+    "chrono",
+    "macros",
+    "postgres",
+    "migrate",
+] }
+tokio = { version = "1.45.1", features = ["full"] }
