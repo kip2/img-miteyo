@@ -85,7 +85,7 @@ resource "aws_internet_gateway" "kore_miteyo" {
   }
 }
 
-# インターネット接続設定
+# インターネット接続設定(ルートテーブル)
 # インターネット向けルートを持つ
 resource "aws_route_table" "kore_miteyo_public" {
   vpc_id = aws_vpc.kore_miteyo.id
@@ -115,7 +115,11 @@ resource "aws_route_table_association" "kore_miteyo_public_1c" {
   route_table_id = aws_route_table.kore_miteyo_public.id
 }
 
-# インターネット接続
+
+#---------------------
+# プライベートサブネット(1a)用設定
+#=====================
+
 # VPCに対する退部接続
 resource "aws_route_table" "kore_miteyo_private_1a" {
   vpc_id = aws_vpc.kore_miteyo.id
@@ -123,10 +127,6 @@ resource "aws_route_table" "kore_miteyo_private_1a" {
     Name = "kore-miteyo-private-1a"
   }
 }
-
-#---------------------
-# プライベートサブネット(1a)用設定
-#=====================
 
 # NAT Gateway 経由でインターネットで出るためのルート
 resource "aws_route" "kore_miteyo_private_1a" {
