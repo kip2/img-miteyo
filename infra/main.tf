@@ -23,13 +23,9 @@ terraform {
   }
 
   backend "s3" {
-    # この「bucket」部分はご自身のS3バケット名を必ず命名してください。
-    # S3バケット名はAWSグローバルで一意でなければなりません。
-    # todo: 変更対象
     bucket  = "kore-miteyo-bucket"
     region  = "ap-northeast-1"
     profile = "admin"
-    # todo: 変更対象
     key     = "kore-miteyo.tfstate"
     encrypt = true
   }
@@ -46,13 +42,13 @@ module "network" {
 }
 
 module "middleware" {
-  source                                   = "./middleware"
-  book_app_db_subnet_group_name            = module.network.book_app_db_subnet_group_name
-  book_app_db_security_group_id            = module.network.book_app_db_security_group_id
-  book_app_redis_security_group_id         = module.network.book_app_redis_security_group_id
-  book_app_vpc_connector_security_group_id = module.network.book_app_vpc_connector_security_group_id
-  book_app_codebuild_security_group_id     = module.network.book_app_codebuild_security_group_id
-  book_app_redis_subnet_group_name         = module.network.book_app_redis_subnet_group_name
+  source                                      = "./middleware"
+  kore_miteyo_db_subnet_group_name            = module.network.kore_miteyo_db_subnet_group_name
+  kore_miteyo_db_security_group_id            = module.network.kore_miteyo_db_security_group_id
+  kore_miteyo_redis_security_group_id         = module.network.kore_miteyo_redis_security_group_id
+  kore_miteyo_vpc_connector_security_group_id = module.network.kore_miteyo_vpc_connector_security_group_id
+  kore_miteyo_codebuild_security_group_id     = module.network.kore_miteyo_codebuild_security_group_id
+  kore_miteyo_redis_subnet_group_name         = module.network.kore_miteyo_redis_subnet_group_name
 }
 
 module "secrets" {
@@ -60,27 +56,27 @@ module "secrets" {
 }
 
 module "app" {
-  source                        = "./app"
-  book_app_vpc_id               = module.network.book_app_vpc_id
-  book_app_db_subnet_ids        = module.network.book_app_db_subnet_ids
-  book_app_vpc_connector_sg_id  = module.network.book_app_vpc_connector_security_group_id
-  book_app_secrets_manager_arn  = module.secrets.book_app_secrets_manager_arn
-  apprunner_instance_role_arn   = module.iam.apprunner_instance_role_arn
-  apprunner_ecr_access_role_arn = module.iam.apprunner_ecr_access_role_arn
+  source                          = "./app"
+  kore_miteyo_vpc_id              = module.network.kore_miteyo_vpc_id
+  kore_miteyo_db_subnet_ids       = module.network.kore_miteyo_db_subnet_ids
+  kore_miteyo_vpc_connector_sg_id = module.network.kore_miteyo_vpc_connector_security_group_id
+  kore_miteyo_secrets_manager_arn = module.secrets.kore_miteyo_secrets_manager_arn
+  apprunner_instance_role_arn     = module.iam.apprunner_instance_role_arn
+  apprunner_ecr_access_role_arn   = module.iam.apprunner_ecr_access_role_arn
 }
 
 module "iam" {
-  source                       = "./iam"
-  book_app_db_subnet_arns      = module.network.book_app_db_subnet_arns
-  book_app_private_subnet_arns = module.network.book_app_private_subnet_arns
+  source                          = "./iam"
+  kore_miteyo_db_subnet_arns      = module.network.kore_miteyo_db_subnet_arns
+  kore_miteyo_private_subnet_arns = module.network.kore_miteyo_private_subnet_arns
 }
 
 module "codebuild" {
-  source                               = "./codebuild"
-  book_app_secrets_manager_arn         = module.secrets.book_app_secrets_manager_arn
-  book_app_vpc_id                      = module.network.book_app_vpc_id
-  book_app_codebuild_subnet_ids        = module.network.book_app_private_subnet_ids
-  book_app_db_security_group_id        = module.network.book_app_db_security_group_id
-  book_app_codebuild_security_group_id = module.network.book_app_codebuild_security_group_id
-  book_app_service_role_arn            = module.iam.codebuild_service_role_arn
+  source                                  = "./codebuild"
+  kore_miteyo_secrets_manager_arn         = module.secrets.kore_miteyo_secrets_manager_arn
+  kore_miteyo_vpc_id                      = module.network.kore_miteyo_vpc_id
+  kore_miteyo_codebuild_subnet_ids        = module.network.kore_miteyo_private_subnet_ids
+  kore_miteyo_db_security_group_id        = module.network.kore_miteyo_db_security_group_id
+  kore_miteyo_codebuild_security_group_id = module.network.kore_miteyo_codebuild_security_group_id
+  kore_miteyo_service_role_arn            = module.iam.codebuild_service_role_arn
 }
